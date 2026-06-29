@@ -1,110 +1,154 @@
-import { Link, NavLink } from "react-router-dom";
-import { Search, UserCircle2, Ticket, Menu, Bell } from "lucide-react";
-
+import { useEffect, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Search, UserCircle2, Ticket, Menu, Bell, X } from "lucide-react";
 import logo from "../../assets/CMC_LOGO.png";
 
 export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
   const menus = [
-    { name: "Trang chủ", path: "/" },
     { name: "Phim", path: "/movies" },
     { name: "Rạp chiếu", path: "/cinemas" },
     { name: "Lịch chiếu", path: "/showtimes" },
     { name: "Khuyến mãi", path: "/promotions" },
   ];
 
-  return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0B0B0B] border-b border-[#AA7D36]/30 shadow-lg shadow-[#AA7D36]/10 backdrop-blur-xl">
-      <div className="max-w-[1500px] mx-auto h-28 px-10 flex items-center justify-between">
-        {/* ================= Logo ================= */}
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "auto";
+  }, [open]);
 
-        <Link
-          to="/"
-          className="flex items-center gap-5 transition-all duration-300 hover:scale-[1.02]"
-        >
-          <img
-            src={logo}
-            alt="CMC Cinema"
-            className="w-40 h-40 object-contain drop-shadow-[0_0_25px_rgba(170,125,54,0.6)]"
+  return (
+    <>
+      {/* FIX: chừa khoảng cho header fixed */}
+      <div className="h-20" />
+
+      <header className="fixed top-0 left-0 right-0 z-[999] bg-[#0B0B0B]/90 backdrop-blur-xl border-b border-[#AA7D36]/20">
+        <div className="max-w-[1500px] mx-auto px-4 md:px-10 h-20 flex items-center justify-between">
+          {/* LOGO */}
+          <Link to="/" className="flex items-center gap-3 shrink-0">
+            <img
+              src={logo}
+              className="w-10 h-10 md:w-14 md:h-14 object-contain"
+              alt="logo"
+            />
+            <div className="leading-tight">
+              <h1 className="text-base md:text-xl font-black bg-gradient-to-r from-[#d8bf84] via-[#AA7D36] to-[#8f6424] bg-clip-text text-transparent">
+                CA MAU CINEMA
+              </h1>
+              <p className="hidden md:block text-[10px] tracking-[5px] text-[#c9ab73]">
+                Premium Movie Experience
+              </p>
+            </div>
+          </Link>
+
+          {/* DESKTOP MENU */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {menus.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) =>
+                  `text-sm font-medium transition ${
+                    isActive
+                      ? "text-[#AA7D36]"
+                      : "text-gray-300 hover:text-[#AA7D36]"
+                  }`
+                }
+              >
+                {item.name}
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* RIGHT ICONS */}
+          <div className="flex items-center gap-2 md:gap-3">
+            {/* Search */}
+            <button className="hidden md:flex w-10 h-10 rounded-full bg-[#AA7D36]/10 text-[#AA7D36] items-center justify-center">
+              <Search size={18} />
+            </button>
+
+            {/* Bell */}
+            <button className="relative w-10 h-10 rounded-full bg-[#AA7D36]/10 text-[#AA7D36] flex items-center justify-center">
+              <Bell size={18} />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
+            </button>
+
+            {/* Ticket */}
+            <button className="hidden md:flex items-center gap-1 px-4 h-10 rounded-full bg-[#AA7D36] text-white font-semibold text-sm leading-none">
+              <Ticket size={16} className="shrink-0" />
+              <span className="leading-none">Đặt vé</span>
+            </button>
+
+            {/* User */}
+            <button
+              onClick={() => navigate("/profile")}
+              className="w-10 h-10 rounded-full bg-[#AA7D36]/10 text-[#AA7D36] flex items-center justify-center"
+            >
+              <UserCircle2 size={20} />
+            </button>
+
+            {/* Mobile menu */}
+            <button
+              onClick={() => setOpen(true)}
+              className="lg:hidden w-10 h-10 rounded-full bg-[#AA7D36]/10 text-[#AA7D36] flex items-center justify-center"
+            >
+              <Menu size={20} />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* MOBILE MENU */}
+      {open && (
+        <div className="fixed inset-0 z-[1000]">
+          <div
+            onClick={() => setOpen(false)}
+            className="absolute inset-0 bg-black/70"
           />
 
-          <div>
-            <h1 className="text-4xl font-black tracking-wide bg-gradient-to-r from-[#d8bf84] via-[#AA7D36] to-[#8f6424] bg-clip-text text-transparent leading-none">
-              CA MAU CINEMA
-            </h1>
+          <div className="absolute right-0 top-0 h-full w-[85%] max-w-sm bg-[#111] border-l border-[#AA7D36]/20 flex flex-col">
+            {/* header */}
+            <div className="flex items-center justify-between px-5 h-16 border-b border-[#222]">
+              <span className="text-[#AA7D36] font-bold">Menu</span>
+              <button
+                onClick={() => setOpen(false)}
+                className="w-9 h-9 rounded-full bg-[#AA7D36]/10 text-[#AA7D36] flex items-center justify-center"
+              >
+                <X size={18} />
+              </button>
+            </div>
 
-            <p className="uppercase tracking-[8px] text-xs text-[#c9ab73] mt-2">
-              Premium Movie Experience
-            </p>
-          </div>
-        </Link>
-
-        {/* ================= Menu ================= */}
-
-        <nav className="hidden lg:flex items-center gap-10">
-          {menus.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `group relative text-[16px] font-semibold transition-all duration-300 ${
-                  isActive
-                    ? "text-[#AA7D36]"
-                    : "text-gray-300 hover:text-[#AA7D36]"
-                }`
-              }
-            >
-              {({ isActive }) => (
-                <>
+            {/* menu */}
+            <div className="flex-1 p-5 flex flex-col gap-2">
+              {menus.map((item) => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) =>
+                    `px-4 py-3 rounded-xl font-medium transition ${
+                      isActive
+                        ? "bg-[#AA7D36] text-white"
+                        : "text-gray-300 hover:bg-[#222]"
+                    }`
+                  }
+                >
                   {item.name}
+                </NavLink>
+              ))}
+            </div>
 
-                  <span
-                    className={`absolute left-0 -bottom-2 h-[2px] rounded-full bg-[#AA7D36] transition-all duration-300 ${
-                      isActive ? "w-full" : "w-0 group-hover:w-full"
-                    }`}
-                  />
-                </>
-              )}
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* ================= Right ================= */}
-
-        <div className="flex items-center gap-4">
-          {/* Search */}
-
-          <button className="w-12 h-12 rounded-full bg-[#AA7D36]/10 text-[#AA7D36] flex items-center justify-center transition-all duration-300 hover:bg-[#AA7D36] hover:text-white hover:scale-110">
-            <Search size={20} />
-          </button>
-
-          {/* Notification */}
-
-          <button className="relative w-12 h-12 rounded-full bg-[#AA7D36]/10 text-[#AA7D36] flex items-center justify-center transition-all duration-300 hover:bg-[#AA7D36] hover:text-white hover:scale-110">
-            <Bell size={20} />
-
-            <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-red-500 border border-[#0B0B0B]"></span>
-          </button>
-
-          {/* Book Ticket */}
-
-          <button className="hidden md:flex items-center gap-2 px-7 py-3 rounded-full bg-[#AA7D36] text-white font-semibold shadow-lg shadow-[#AA7D36]/40 transition-all duration-300 hover:bg-[#8f6424] hover:scale-105">
-            <Ticket size={19} />
-            Đặt vé
-          </button>
-
-          {/* User */}
-
-          <button className="w-12 h-12 rounded-full bg-[#AA7D36]/10 text-[#AA7D36] flex items-center justify-center transition-all duration-300 hover:bg-[#AA7D36] hover:text-white hover:scale-110">
-            <UserCircle2 size={24} />
-          </button>
-
-          {/* Mobile */}
-
-          <button className="lg:hidden w-12 h-12 rounded-full bg-[#AA7D36]/10 text-[#AA7D36] flex items-center justify-center hover:bg-[#AA7D36] hover:text-white transition-all">
-            <Menu />
-          </button>
+            {/* footer */}
+            <div className="p-5 border-t border-[#222]">
+              <button className="w-full h-12 rounded-xl bg-[#AA7D36] text-white font-semibold flex items-center justify-center gap-2">
+                <Ticket size={18} />
+                Đặt vé ngay
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </header>
+      )}
+    </>
   );
 }
